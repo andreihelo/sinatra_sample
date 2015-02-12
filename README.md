@@ -1,2 +1,2 @@
-# sinatra_sample
+# Sinatra Sample Project
 Sample project to test Sinatra Framework.
