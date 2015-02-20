@@ -58,7 +58,11 @@ def print_age(birthdate)
     age = today.year - birthdate.year -
     ((today.month > birthdate.month ||
     (today.month == birthdate.month && today.day >= birthdate.day)) ? 0 : 1)
-    "debes tener #{age} años"
+    if age < 0
+      "no creo que aún no hayas nacido"
+    else
+      "debes tener #{age} años"
+    end
   rescue
     @fails << 'Hay un problema con el formato de tu fecha de nacimiento.'
     "no puedo calcular tu edad"
