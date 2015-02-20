@@ -11,7 +11,7 @@ end
 
 post '/contact' do
   @fails = []
-  
+
   if params[:person][:name].gsub(/\s+/, '').size == 0
     params[:person][:name] = 'ser anónimo'
     @fails << 'No he recibido dato de tu nombre.'
@@ -66,9 +66,13 @@ def print_age(birthdate)
 end
 
 def print_fails
-  message = "\nErrores:"
-  @fails.each do |fail|
-    message += "\n#{fail}"
+  if @fails.size > 0
+    message = "\nErrores:"
+    @fails.each do |fail|
+      message += "\n#{fail}"
+    end
+  else
+    message = ''
   end
   message
 end
