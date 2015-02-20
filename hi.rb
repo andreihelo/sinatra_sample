@@ -1,8 +1,6 @@
 require 'sinatra'
 require 'date'
 
-@fails = []
-
 get '/' do
   "Hola mundo!\n\nEl servicio se encuentra en https://andreihelo-sinatra.herokuapp.com/contact"
 end
@@ -12,7 +10,8 @@ post '/' do
 end
 
 post '/contact' do
-
+  @fails = []
+  
   if params[:person][:name].gsub(/\s+/, '').size == 0
     params[:person][:name] = 'ser anónimo'
     @fails << 'No he recibido dato de tu nombre.'
