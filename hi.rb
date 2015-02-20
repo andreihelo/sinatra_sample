@@ -1,32 +1,54 @@
 require 'sinatra'
 require 'date'
 
-get '/hi' do
-  "Hola mundo!"
+$fails = []
+
+get '/' do
+  "Hola mundo!\n\nEl servicio se encuentra en https://andreihelo-sinatra.herokuapp.com/contact"
+end
+
+post '/' do
+  "Hola mundo!\n\nEl servicio se encuentra en https://andreihelo-sinatra.herokuapp.com/contact"
 end
 
 post '/contact' do
+  if params[:person][:name].gsub(/\s+/, '').size == 0
+    params[:person][:name] = 'ser anónimo'
+    $fails << 'No he recibido dato de tu nombre.'
+  end
+
   if params[:person][:genre] == 'femenino'
     something = 'te apuesto una tortilla a que de niña tuviste algunas muñecas'
   elsif params[:person][:genre] == 'masculino'
     something = 'te apuesto un calcetín usado a que de niño jugabas con carritos'
   else
     something = 'no se qué decir sobre ti'
+    $fails << 'No he recibido dato de tu género.'
   end
 
-  if params[:person][:name].gsub(/\s+/, '').size == 0
-    params[:person][:name] = 'ser anónimo'
+  unless params[:person][:birthdate]
+    $fails << 'No he recibido dato de tu fecha de nacimiento.'
   end
 
-  geeky = params[:person][:preferences] ? params[:person][:preferences].count * 100 / 3 : 0
+  unless params[:person][:city]
+    $fails << 'No he recibido dato de ciudad.'
+  end
 
-  if params[:person][:birthdate]
-    "Hola #{params[:person][:name]}, #{print_age(params[:person][:birthdate])}, eres de #{params[:person][:city]} y #{something},
-    escribiste #{params[:message].size} caracteres y mi diagnóstico es que eres #{geeky}% geek."
+  if params[:person][:preferences]
+    geeky = params[:person][:preferences].count * 100 / 3
   else
-    "Hola #{params[:person][:name]}, sin tu fecha de nacimiento no puedo calcular tu edad, eres de #{params[:person][:city]} y #{something},
-    escribiste #{params[:message].size} caracteres y mi diagnóstico es que eres #{geeky}% geek."
+    geeky = 0
+    $fails << 'No he recibido dato de al menos una de tus preferencias.'
   end
+
+  if !params[:message]
+    $fails << 'No he recibido dato de mensaje.'
+  elsif params[:message].size < 1
+    $fails << 'Tu mensaje está vacío, escribe cualquier cosa.'
+  end
+
+  "Hola #{params[:person][:name]}, #{print_age(params[:person][:birthdate])}, eres de #{params[:person][:city]} y #{something},
+   escribiste #{params[:message].size} caracteres y mi diagnóstico es que eres #{geeky}% geek. #{print_fails}"
 end
 
 def print_age(birthdate)
@@ -38,6 +60,15 @@ def print_age(birthdate)
     (today.month == birthdate.month && today.day >= birthdate.day)) ? 0 : 1)
     "debes tener #{age} años"
   rescue
+    $fails << 'Hay un problema con el formato de tu fecha de nacimiento.'
     "no puedo calcular tu edad"
   end
+end
+
+def print_fails
+  message = "\nErrores:"
+  $fails.each do |fail|
+    message += "\n#{fail}"
+  end
+  message
 end
