@@ -1,4 +1,5 @@
 require 'sinatra'
+require 'sinatra/multi_route'
 require 'date'
 
 get '/' do
