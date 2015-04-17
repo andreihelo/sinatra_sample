@@ -9,7 +9,7 @@ post '/' do
   "Hola mundo!\n\nEl servicio se encuentra en https://andreihelo-sinatra.herokuapp.com/contact"
 end
 
-get_or_post '/contact' do
+route :get, :post, '/contact' do
   @fails = []
 
   if params[:person][:name].gsub(/\s+/, '').size == 0
