@@ -3,6 +3,8 @@ require 'sinatra/multi_route'
 require 'date'
 
 get '/' do
+  response['Access-Control-Allow-Origin'] = '*'
+
   "Hola mundo!\n\nEl servicio se encuentra en https://andreihelo-sinatra.herokuapp.com/contact"
 end
 
